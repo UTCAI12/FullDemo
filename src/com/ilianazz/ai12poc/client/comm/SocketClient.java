@@ -6,8 +6,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import com.ilianazz.ai12poc.common.data.Model;
+import com.ilianazz.ai12poc.common.data.track.TrackLite;
 import com.ilianazz.ai12poc.common.data.user.UserLite;
 import com.ilianazz.ai12poc.common.server.SocketMessage;
 import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
@@ -21,9 +23,12 @@ public class SocketClient {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Model model;
+
+	private RequestHandler requestHandler;
     
     public SocketClient(String serverAddress, int serverPort, Model model) {
     	this.model = model;
+		this.requestHandler = new RequestHandler(model);
     	try {
 			this.socket = new Socket(serverAddress, serverPort);
 			this.out = new ObjectOutputStream(socket.getOutputStream());
@@ -48,21 +53,19 @@ public class SocketClient {
 	}
     
     public void connect(final UserLite userLite) {
-    	this.sendServer(SocketMessagesTypes.USER_CONNECT, userLite);
+		this.sendServer(SocketMessagesTypes.USER_CONNECT, userLite);
     }
     
     public void start() {
     	System.out.println("Client: start lisening");
 		while (true) {
 		    try {
-				SocketMessage message = (SocketMessage) this.in.readObject();
+				// Reading message from the socket. readObject is sync : waiting for message to be received. So this method call is blocking while no message.
+				final SocketMessage message = (SocketMessage) this.in.readObject();
 				System.out.println("Client: User receved new message" + message);
-				
-				if (message.messageType == SocketMessagesTypes.USER_CONNECT) {
-					UserLite userLite = (UserLite) message.object;
-					this.model.addUser(userLite);
-				}
-		    	
+
+				this.requestHandler.handleMessage(message);
+
 			} catch (IOException | ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

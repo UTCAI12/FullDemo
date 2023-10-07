@@ -14,39 +14,30 @@ import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
 public class ClientHandler extends Thread {
 
     private final Socket socket;
-    private Map<UserLite, ClientHandler> users;
-    
-    private ObjectOutputStream  out; 
-    
-    public ClientHandler(Socket socket, Map<UserLite, ClientHandler> users) {
-        this.socket = socket;
-        this.users = users;
-        
+    private ObjectOutputStream  out;
+
+	private UserLite user;
+	private ServerCommunicationController serverController;
+
+    public ClientHandler(final Socket socket, final ServerCommunicationController serverController) {
+        this.serverController = serverController;
+		this.socket = socket;
+
         try {
 			this.out = new ObjectOutputStream (socket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
     }
-    
-    public void sendAll(final SocketMessage message) {
-    	this.users.forEach((uuid, clientHandler) -> {
-    		clientHandler.send(message);
-    	});
-    	
-    }
-    
-    public void sendAllExclude(final SocketMessage message, final UUID excluded) {
-    	System.out.println("Server: send message to all registered users excluded : " + excluded);
-    	this.users.forEach((user, clientHandler) -> {
-    		if (excluded != user.getUuid()) {
-    			clientHandler.send(message);
-    			System.out.println("Server: sending to:" + user.getUuid());
-    		}
-    		
-    	});
-    }
-    
+
+	public UserLite getUser() {
+		return this.user;
+	}
+
+	public void setUser(final UserLite user) {
+		this.user = user;
+	}
+
     public void send(final SocketMessage message) {
     	try {
 			this.out.writeObject(message);
@@ -65,23 +56,13 @@ public class ClientHandler extends Thread {
 					SocketMessage receivedMessage = (SocketMessage) in.readObject();
 					System.out.println("Server: received "+ receivedMessage);
 					
-					if (receivedMessage.messageType == SocketMessagesTypes.USER_CONNECT) {
-						UserLite userLite = (UserLite) receivedMessage.object ;
-					   	this.users.put(userLite, this);
-					   	System.out.println("Server: new client : "+ userLite.getUuid() + " ! there is now " + this.users.size() + " registered clients");
-						this.sendAllExclude(receivedMessage, userLite.getUuid());
-						
-						this.users.forEach((registeredUser, handler) -> {
-							System.out.println("Server: Notifying this new client with all current clients");
-							if (registeredUser.getUuid() != userLite.getUuid()) {
-								SocketMessage m = new SocketMessage(SocketMessagesTypes.USER_CONNECT, registeredUser);
-								this.send(m);
-								System.out.println("Server: sending user: " + registeredUser.getUuid());
-							}
-						});
-						
-					}
+					this.serverController.onMessage(receivedMessage, this);
 					
+				} catch (java.net.SocketException e) {
+					// If user disconnect without sending a DISCONNECT message, create one
+					final SocketMessage socketMessage = new SocketMessage(SocketMessagesTypes.USER_DISCONNECT, this.user);
+					this.serverController.onMessage(socketMessage, this);
+					return;
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}

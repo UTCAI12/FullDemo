@@ -8,7 +8,7 @@ public class TrackLite implements Serializable {
 	private static final long serialVersionUID = -5472946973924149998L;
 	private String name;
 	
-    public Track(final String name) {
+    public TrackLite(final String name) {
     	this.name = name;
     }
 
