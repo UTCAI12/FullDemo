@@ -1,25 +1,19 @@
-package com.ilianazz.ai12poc.server;
+package main.java.com.ilianazz.server;
 
-import com.ilianazz.ai12poc.common.data.track.TrackLite;
-import com.ilianazz.ai12poc.common.data.user.UserLite;
-import com.ilianazz.ai12poc.common.server.SocketMessage;
-import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
+import main.java.com.ilianazz.common.data.track.TrackLite;
+import main.java.com.ilianazz.common.data.user.UserLite;
+import main.java.com.ilianazz.common.server.SocketMessage;
+import main.java.com.ilianazz.common.server.SocketMessagesTypes;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
 public class RequestHandler {
 
-    private Map<UserLite, ClientHandler> users;
+    private final Map<UserLite, ClientHandler> users;
     public RequestHandler(final Map<UserLite, ClientHandler> users) {
         this.users = users;
-    }
-    public void sendAll(final SocketMessage message) {
-        this.users.forEach((uuid, clientHandler) -> {
-            clientHandler.send(message);
-        });
     }
 
     public void sendAllExclude(final SocketMessage message, final UUID excluded) {

@@ -1,9 +1,11 @@
-package com.ilianazz.ai12poc.common.data.user;
+package main.java.com.ilianazz.common.data.user;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
 public class UserLite implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 271472610567368097L;
 	private UUID uuid;
 	private String pseudo;

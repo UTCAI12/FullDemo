@@ -1,4 +1,4 @@
-package com.ilianazz.ai12poc.common.server;
+package main.java.com.ilianazz.common.server;
 
 import java.io.Serializable;
 

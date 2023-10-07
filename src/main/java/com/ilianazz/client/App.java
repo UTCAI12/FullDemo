@@ -1,12 +1,11 @@
-package com.ilianazz.ai12poc.client;
+package main.java.com.ilianazz.client;
 
-import com.ilianazz.ai12poc.client.comm.SocketClient;
-import com.ilianazz.ai12poc.common.data.Model;
-import com.ilianazz.ai12poc.common.data.ModelUpdateTypes;
-import com.ilianazz.ai12poc.common.data.track.TrackLite;
-import com.ilianazz.ai12poc.common.data.user.UserLite;
-import com.ilianazz.ai12poc.client.ihm.Frame;
-import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
+import main.java.com.ilianazz.client.comm.SocketClient;
+import main.java.com.ilianazz.client.hmi.Controller;
+import main.java.com.ilianazz.common.data.Model;
+import main.java.com.ilianazz.common.data.user.UserLite;
+import main.java.com.ilianazz.client.hmi.Frame;
+import javafx.application.Application;
 
 import java.util.Random;
 import java.util.UUID;
@@ -14,7 +13,7 @@ import java.util.UUID;
 
 
 public class App {
-	public App() {
+	public App(String[] args) {
 		
 		String[] names = {
 				"Ilian",
@@ -47,11 +46,17 @@ public class App {
 		// Connect to the server
 		comm.connect(userLite);
 		
-		final Frame frame = new Frame(m, comm);
+		final Controller controller = new Controller(m, comm);
+
+		// Set the controller in MyApp
+		Frame.setController(controller);
+
+		// Launch the application
+		Application.launch(Frame.class, args);
 	}
 
 
 	public static void main(String[] args) {
-		final App app = new App();
+		new App(args);
 	}
 }

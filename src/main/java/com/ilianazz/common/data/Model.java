@@ -1,9 +1,9 @@
-package com.ilianazz.ai12poc.common.data;
+package main.java.com.ilianazz.common.data;
 
 
 
-import com.ilianazz.ai12poc.common.data.track.TrackLite;
-import com.ilianazz.ai12poc.common.data.user.UserLite;
+import main.java.com.ilianazz.common.data.track.TrackLite;
+import main.java.com.ilianazz.common.data.user.UserLite;
 
 import java.io.Serializable;
 import java.util.ArrayList;

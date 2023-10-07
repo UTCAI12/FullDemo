@@ -1,15 +1,13 @@
-package com.ilianazz.ai12poc.server;
+package main.java.com.ilianazz.server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
-import java.util.UUID;
 
-import com.ilianazz.ai12poc.common.data.user.UserLite;
-import com.ilianazz.ai12poc.common.server.SocketMessage;
-import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
+import main.java.com.ilianazz.common.data.user.UserLite;
+import main.java.com.ilianazz.common.server.SocketMessage;
+import main.java.com.ilianazz.common.server.SocketMessagesTypes;
 
 public class ClientHandler extends Thread {
 
@@ -17,7 +15,7 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream  out;
 
 	private UserLite user;
-	private ServerCommunicationController serverController;
+	private final ServerCommunicationController serverController;
 
     public ClientHandler(final Socket socket, final ServerCommunicationController serverController) {
         this.serverController = serverController;

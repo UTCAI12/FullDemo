@@ -1,11 +1,11 @@
-package com.ilianazz.ai12poc.common.data.user;
+package main.java.com.ilianazz.common.data.user;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 public class User extends UserLite implements Serializable {
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 
     public User(UUID uuid, String pseudo, String firstName, String lastName) {
         super(uuid, pseudo);

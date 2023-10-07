@@ -1,4 +1,4 @@
-package com.ilianazz.ai12poc.common.data.track;
+package main.java.com.ilianazz.common.data.track;
 
 import java.io.Serial;
 import java.io.Serializable;

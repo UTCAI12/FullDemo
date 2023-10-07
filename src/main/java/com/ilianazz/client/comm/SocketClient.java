@@ -1,4 +1,4 @@
-package com.ilianazz.ai12poc.client.comm;
+package main.java.com.ilianazz.client.comm;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,39 +6,32 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
-import com.ilianazz.ai12poc.common.data.Model;
-import com.ilianazz.ai12poc.common.data.track.TrackLite;
-import com.ilianazz.ai12poc.common.data.user.UserLite;
-import com.ilianazz.ai12poc.common.server.SocketMessage;
-import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
+import main.java.com.ilianazz.common.data.Model;
+import main.java.com.ilianazz.common.data.user.UserLite;
+import main.java.com.ilianazz.common.server.SocketMessage;
+import main.java.com.ilianazz.common.server.SocketMessagesTypes;
 
 
 public class SocketClient {
 
-    private String serverAddress;
-    private int serverPort;
-    private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Model model;
 
-	private RequestHandler requestHandler;
+	private final RequestHandler requestHandler;
     
     public SocketClient(String serverAddress, int serverPort, Model model) {
-    	this.model = model;
+
 		this.requestHandler = new RequestHandler(model);
-    	try {
-			this.socket = new Socket(serverAddress, serverPort);
+
+    	try (final Socket socket = new Socket(serverAddress, serverPort) ) {
 			this.out = new ObjectOutputStream(socket.getOutputStream());
 	    	this.in =  new ObjectInputStream(socket.getInputStream());
-	    	
-	    	
+
     	} catch (UnknownHostException e) {
-            System.err.println("Unknown host: " + this.serverAddress);
+            System.err.println("Unknown host: " + serverAddress);
         } catch (IOException e) {
-            System.err.println("Couldn't connect to: " + this.serverPort);
+            System.err.println("Couldn't connect to: " + serverPort);
         }
     }
     	
@@ -57,13 +50,12 @@ public class SocketClient {
     }
     
     public void start() {
-    	System.out.println("Client: start lisening");
+    	System.out.println("Client: start listening");
 		while (true) {
 		    try {
 				// Reading message from the socket. readObject is sync : waiting for message to be received. So this method call is blocking while no message.
 				final SocketMessage message = (SocketMessage) this.in.readObject();
-				System.out.println("Client: User receved new message" + message);
-
+				System.out.println("Client: User received new message" + message);
 				this.requestHandler.handleMessage(message);
 
 			} catch (IOException | ClassNotFoundException e) {
