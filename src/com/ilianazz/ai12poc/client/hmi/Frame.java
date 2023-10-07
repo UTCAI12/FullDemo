@@ -1,4 +1,4 @@
-package com.ilianazz.ai12poc.client.ihm;
+package com.ilianazz.ai12poc.client.hmi;
 
 
 import javax.swing.*;
@@ -11,7 +11,6 @@ import com.ilianazz.ai12poc.common.data.track.TrackLite;
 import com.ilianazz.ai12poc.common.data.user.UserLite;
 import com.ilianazz.ai12poc.common.server.SocketMessagesTypes;
 
-import java.nio.charset.Charset;
 import java.util.Random;
 
 public class Frame extends JFrame {
