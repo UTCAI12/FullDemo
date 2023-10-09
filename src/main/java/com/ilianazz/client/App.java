@@ -1,11 +1,11 @@
 package main.java.com.ilianazz.client;
 
-import main.java.com.ilianazz.client.comm.SocketClient;
+import javafx.application.Application;
+import main.java.com.ilianazz.client.comm.ClientCommunicationController;
 import main.java.com.ilianazz.client.hmi.Controller;
+import main.java.com.ilianazz.client.hmi.Frame;
 import main.java.com.ilianazz.common.data.Model;
 import main.java.com.ilianazz.common.data.user.UserLite;
-import main.java.com.ilianazz.client.hmi.Frame;
-import javafx.application.Application;
 
 import java.util.Random;
 import java.util.UUID;
@@ -38,15 +38,14 @@ public class App {
 		final Model m = new Model(userLite);
 
 		// Initializing the communication
-		final SocketClient comm = new SocketClient("localhost", 8000, m);
-
-		// Starting the socket in another thread
-		new Thread(comm::start).start();
+		final ClientCommunicationController comm = new ClientCommunicationController("localhost", 8000, m);
+		comm.start();
 
 		// Connect to the server
 		comm.connect(userLite);
 		
 		final Controller controller = new Controller(m, comm);
+
 
 		// Set the controller in MyApp
 		Frame.setController(controller);

@@ -18,8 +18,6 @@ public class Frame extends Application {
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-
-		controller.initListeners();
 	}
 
 	public static void setController(Controller myController) {
